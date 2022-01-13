@@ -14,35 +14,18 @@ Requirements
 Installation
 ------------
 
-[Download Symfony][4] to install the `symfony` binary on your computer and run
-this command:
+Clone this repository on your computer and run
+this command in the project folder:
 
 ```bash
-$ symfony new --demo my_project
+$ composer install
 ```
-
-Alternatively, you can use Composer:
-
-```bash
-$ composer create-project symfony/symfony-demo my_project
-```
-
-Usage
------
-
-There's no need to configure anything to run the application. If you have
-[installed Symfony][4] binary, run this command:
-
-```bash
-$ cd my_project/
-$ symfony serve
-```
-
-Then access the application in your browser at the given URL (<https://localhost:8000> by default).
 
 If you don't have the Symfony binary installed, run `php -S localhost:8000 -t public/`
 to use the built-in PHP web server or [configure a web server][3] like Nginx or
 Apache to run the application.
+
+Then access the application in your browser.
 
 Tests
 -----
@@ -53,6 +36,7 @@ Execute this command to run tests:
 $ cd my_project/
 $ ./bin/phpunit
 ```
+> You can run `export SYMFONY_DEPRECATIONS_HELPER=weak` in terminal before running the tests to suppress the deprecation warnings. 
 
 [1]: https://symfony.com/doc/current/best_practices.html
 [2]: https://symfony.com/doc/current/reference/requirements.html

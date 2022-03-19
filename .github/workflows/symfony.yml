@@ -29,9 +29,6 @@ jobs:
         
     - name: Install Composer
       run: composer install
-      
-    - name: Security check installed dependencies
-      uses: symfonycorp/security-checker-action@v2
   
   # Build
     - name: Yarn install

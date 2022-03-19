@@ -1,0 +1,57 @@
+
+
+# what are we caching 
+cache:
+  key: ${CI_COMMIT_REF_SLUG}
+  paths:
+    - vendor/
+
+# Database that is needed for this operation
+# We are pulling docker image from dockerhub
+services:
+  - mysql:5.7
+
+
+variables:
+  MYSQL_ROOT_PASSWORD: root
+
+
+# Running initial build
+build:
+    
+
+# Running unit test
+test:
+# Choosing 8.2 version of PHP as suggested in the task
+  image: php:8.2
+  stage: test
+  # Global variables for your PHP app
+  variables:
+    APP_NAME: "ht-0001"
+    # Configuring URL for the database
+    DATABASE_URL: "mysql://root:root@mysql:3306/symfony"
+  script:
+    # Git install 
+    - apt-get update -yqq
+    - apt-get install git libzip-dev zip -yqq
+    # Xdebug for code coverage reporting
+    - pecl install xdebug
+    - docker-php-ext-enable xdebug
+
+    # Required sql driver
+    - docker-php-ext-install pdo_mysql zip
+
+    # Install composer
+    - curl --show-error --silent https://getcomposer.org/installer | php
+
+    # Install all project dependencies
+    - php composer.phar install
+
+    # Run PHPUnit with code coverage report
+    - ./bin/phpunit --configuration phpunit.xml.dist --coverage-text --colors=never
+    # Regex code so Gitlub can understand code coverage radit.
+  coverage: '/^\s*Lines:\s*\d+.\d+\%/'
+
+
+# Deploying the app
+deploy:

@@ -1,0 +1,17 @@
+name: Symfony-nj
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+  
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: action/checkout@v2
+    - name: Install Composer
+      run: composer install

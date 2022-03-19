@@ -2,17 +2,65 @@ name: Symfony-nj
 
 on:
   push:
-    branches: [ master ]
+    branches:
+      - master
+      - dev
   pull_request:
-    branches: [ master ]
 
 jobs:
   build:
+    name: Symfony (PHP ${{ matrix.php-versions }})
   
     runs-on: ubuntu-latest
     
     steps:
     - uses: actions/checkout@v3
     
+    - name: Setup PHP, extensions and composer with shivammathur/setup-php
+      uses: shivammathur/setup-php@verbose
+      with:
+        php-version: ${{ matrix.php-versions }}
+        extensions: mbstring, xml, ctype, iconv, intl, pdo_sqlite, dom, filter, gd, iconv, json, mbstring, pdo
+
+      # Composer
+    - name: Get composer cache directory
+      id: composer-cache
+      run: echo "::set-output name=dir::$(composer config cache-files-dir)"
+    - name: Cache composer dependencies
+      uses: actions/cache@v1
+      with:
+        path: ${{ steps.composer-cache.outputs.dir }}
+        key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+        restore-keys: ${{ runner.os }}-composer-
+        
     - name: Install Composer
       run: composer install
+      
+    - name: Security check installed dependencies
+      uses: symfonycorp/security-checker-action@v2
+  
+  # Build
+    - name: Yarn install
+      if: steps.yarn-cache-node-modules.outputs.cache-hit != 'true'
+      run: yarn install
+
+    - name: Yarn build
+      run: yarn run encore production
+
+    - name: Archive production artifacts
+      uses: actions/upload-artifact@v1
+      with:
+        name: build
+        path: public/build
+# Symfony
+    - name: Check the Symfony console
+      run: |
+        php bin/console -V
+        php bin/console about
+# Tests
+    - name: Run unit and functional tests
+      run: |
+        php bin/phpunit --stop-on-failure
+  
+    
+

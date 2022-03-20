@@ -43,15 +43,35 @@ jobs:
       with:
         name: build
         path: public/build
-# Symfony
+  # Symfony
     - name: Check the Symfony console
       run: |
         php bin/console -V
         php bin/console about
-# Tests
+  # Tests
     - name: Run unit and functional tests
       run: |
         php bin/phpunit --stop-on-failure
-  
+  # Deploy
+    - name: Deploy to prod server
+      uses: shivammathur/setup-php@master
+      with:
+        php-version: 8.2
+    - name: configure SSH
+      env:
+        SSH_KEY: ${{ secrets.PRIVATE_KEY }}
+        KNOW_HOST: ${{ secrets.KNOWN_HOST }}      
+        SSH_HOST: ${{ secrets.TARGET_HOST }}
+        SSH_USER: ${{ secrets.TARGET_USER }}
+      run: |
+        mkdir -p ~/.ssh/
+        echo "$KNOWN_HOST" > ~/.ssh/known_hosts
+        echo "$SSH_KEY" > ~/.ssh/production.key
+        chmod 600 ~/.ssh/production.key
+        mkdir -p ~/project
+        cp ./public ~/project
+        
+
+
     
 

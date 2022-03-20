@@ -53,23 +53,10 @@ jobs:
       run: |
         php bin/phpunit --stop-on-failure
   # Configure SSH
-    - name: Configure SSH
-      uses: shivammathur/setup-php@master
+      uses: kielabokkie/ssh-key-and-known-hosts-action@v1
       with:
-        php-version: 8.2
-    - name: configure SSH
-      env:
-        SSH_KEY: ${{ secrets.PRIVATE_KEY }}
-        KNOW_HOST: ${{ secrets.KNOWN_HOST }}      
-        SSH_HOST: ${{ secrets.TARGET_HOST }}
-        SSH_USER: ${{ secrets.TARGET_USER }}
-      run: |
-        mkdir -p ~/project
-        mkdir -p ~/.ssh/
-        echo "$KNOWN_HOST" > ~/.ssh/known_hosts
-        echo "$SSH_KEY" > ~/.ssh/production.key
-        chmod 600 ~/.ssh/production.key
-        cat >>~/.ssh/config <<END
+        ssh-private-key: ${{ secrets.PRIVATE_KEY}}
+        ssh-host: ${{ secrets.TARGET_HOST }}
     # Deploy to production    
     - name: Copy artefact to server
       uses: garygrossgarten/github-action-scp@release

@@ -69,7 +69,7 @@ jobs:
         echo "$SSH_KEY" > ~/.ssh/production.key
         chmod 600 ~/.ssh/production.key
         mkdir -p ~/project
-        cp ./public ~/project
+        cp -r /home/alen/Workplace/ht-0001-test/public ~/project
         
 
 

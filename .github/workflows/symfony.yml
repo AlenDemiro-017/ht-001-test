@@ -52,13 +52,7 @@ jobs:
     - name: Run unit and functional tests
       run: |
         php bin/phpunit --stop-on-failure
-  # Configure SSH
-    - name: Configuure SSH client 
-      uses: kielabokkie/ssh-key-and-known-hosts-action@v1
-      with:
-        ssh-private-key: ${{ secrets.PRIVATE_KEY}}
-        ssh-host: ${{ secrets.TARGET_HOST }}
-    # Deploy to production    
+  # Deploy to production    
     - name: Copy artefact to server
       uses: garygrossgarten/github-action-scp@release
       with:
